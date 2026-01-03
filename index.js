@@ -27,10 +27,14 @@ if (verifyUserInput()) {
     markDone();
   } else if (cmd == "mark-in-progress") {
     markInProgress();
-  } else if (cmd == "mark-done") {
-    console.log(26);
   } else if (cmd == "list") {
-    console.log(28);
+    list();
+  } else if (cmd == "list-done") {
+    listDone();
+  } else if (cmd == "list-todo") {
+    listTodo();
+  } else if (cmd == "list-in-progress") {
+    listInProgress();
   }
 }
 function addTask() {
@@ -148,6 +152,45 @@ function markDone() {
     updateFile(data, id);
   }
 }
+function list() {
+  let data = isFileExist([]);
+  if (data.length <= 0) {
+    process.stdout.write("There are no task availble");
+    process.exit(1);
+  }
+  data = data.splice(1);
+  console.log(data);
+}
+function listDone() {
+  let data = isFileExist([]);
+  if (data.length <= 0) {
+    process.stdout.write("There are no task availble");
+    process.exit(1);
+  }
+  data = data.splice(1);
+  data = data.filter((item) => item.status == "done");
+  console.log(data);
+}
+function listTodo() {
+  let data = isFileExist([]);
+  if (data.length <= 0) {
+    process.stdout.write("There are no task availble");
+    process.exit(1);
+  }
+  data = data.splice(1);
+  data = data.filter((item) => item.status == "todo");
+  console.log(data);
+}
+function listInProgress() {
+  let data = isFileExist([]);
+  if (data.length <= 0) {
+    process.stdout.write("There are no task availble");
+    process.exit(1);
+  }
+  data = data.splice(1);
+  data = data.filter((item) => item.status == "in-progress");
+  console.log(data);
+}
 function deleteTask() {
   const id = Number(input);
   if (Number.isNaN(id)) {
@@ -211,7 +254,7 @@ function createId(data) {
   return id;
 }
 function verifyUserInput() {
-  if (input.length <= 0 || cmd.length <= 0) {
+  if (cmd.length <= 0) {
     console.log("1");
     return true;
   } else if (
@@ -220,7 +263,10 @@ function verifyUserInput() {
     cmd != "delete" &&
     cmd != "mark-in-progress" &&
     cmd != "mark-done" &&
-    cmd != "list"
+    cmd != "list" &&
+    cmd != "list-todo" &&
+    cmd != "list-todo" &&
+    cmd != "list-in-progress"
   ) {
     console.log("2");
     return true;
