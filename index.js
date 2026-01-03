@@ -6,20 +6,21 @@ let input = argv.slice(3).join(" ");
 const fs = require("fs");
 const fileName = "tasks.json";
 
+const day = new Date().getDate();
+const month = new Date().getMonth() + 1;
+const year = new Date().getFullYear();
+const time = new Date().getHours();
+const minute = new Date().getMinutes();
+const seconds = new Date().getSeconds();
+
 if (verifyUserInput()) {
   process.stdout.write("Please give right input");
+  process.exit(1);
 } else {
-  const day = new Date().getDate();
-  const month = new Date().getMonth() + 1;
-  const year = new Date().getFullYear();
-  const time = new Date().getHours();
-  const minute = new Date().getMinutes();
-  const seconds = new Date().getSeconds();
-
   if (cmd == "add") {
     addTask(input);
   } else if (cmd == "update") {
-    const id = input[0];
+    updateTask();
   } else if (cmd == "mark-in-progress") {
     console.log(24);
   } else if (cmd == "mark-done") {
@@ -44,6 +45,67 @@ if (verifyUserInput()) {
       data[0] = [id];
     }
     data.push(obj);
+    updateFile(data, id);
+  }
+}
+function updateTask() {
+  const id = Number(input[0]);
+  if (Number.isNaN(id)) {
+    process.stdout.write("Please give right ID of the task");
+    process.exit(1);
+  } else {
+    let data = isFileExist([]);
+    if (data.length <= 0) {
+      process.stdout.write("There are no task availble");
+      process.exit(1);
+    }
+    let isIdExist = false;
+
+    let i = 1;
+    while (data.length > i) {
+      if (data[i].id == id) {
+        isIdExist = true;
+        data[i].description = input.split(" ").slice(1).join(" ");
+        data[
+          i
+        ].updatedAt = `${day}/${month}/${year}, ${time}:${minute}:${seconds}`;
+        break;
+      }
+      i++;
+    }
+    if (!isIdExist) {
+      process.stdout.write("Please give right ID of the task");
+      process.exit(1);
+    }
+    updateFile(data, id);
+  }
+}
+function del() {
+  const id = Number(input[0]);
+  if (Number.isNaN(id)) {
+    process.stdout.write("Please give right ID of the task");
+    process.exit(1);
+  } else {
+    let data = isFileExist([]);
+    if (data.length <= 0) {
+      process.stdout.write("There are no task availble");
+      process.exit(1);
+    }
+    let isIdExist = false;
+
+    let i = 1;
+    while (data.length > i) {
+      if (data[i].id == id) {
+        isIdExist = true;
+        data[i].description = input.split(" ").slice(1).join(" ");
+        break;
+      }
+      i++;
+    }
+    if (!isIdExist) {
+      process.stdout.write("Please give right ID of the task");
+      process.exit(1);
+    }
     updateFile(data, id);
   }
 }
