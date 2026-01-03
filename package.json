@@ -1,15 +1,33 @@
 {
   "name": "task-cli",
   "version": "1.0.0",
-  "description": "Build a CLI app to track your tasks and manage your to-do list.",
+  "description": "Build a command-line task tracker that stores tasks in a local JSON file.",
   "license": "ISC",
-  "author": "",
+  "author": "Abdullah khan <Akhan283785@gmail.com>",
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "bin": {
     "task-cli": "./index.js"
-  }
+  },
+  "keywords": [
+    "cli",
+    "task-tracker",
+    "todo",
+    "nodejs",
+    "command-line",
+    "json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Abdullahkhan871/task-cli"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "index.js"
+  ]
 }
