@@ -1,0 +1,15 @@
+{
+  "name": "task-cli",
+  "version": "1.0.0",
+  "description": "Build a CLI app to track your tasks and manage your to-do list.",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "task-cli": "./index.js"
+  }
+}
