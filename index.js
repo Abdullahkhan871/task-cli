@@ -18,38 +18,42 @@ if (verifyUserInput()) {
   process.exit(1);
 } else {
   if (cmd == "add") {
-    addTask(input);
+    addTask();
   } else if (cmd == "update") {
     updateTask();
+  } else if (cmd == "delete") {
+    deleteTask();
+  } else if (cmd == "mark-done") {
+    markDone();
   } else if (cmd == "mark-in-progress") {
-    console.log(24);
+    markInProgress();
   } else if (cmd == "mark-done") {
     console.log(26);
   } else if (cmd == "list") {
     console.log(28);
   }
-
-  function addTask(task) {
-    let data = isFileExist([]);
-    let id = createId(data);
-    const obj = {
-      id,
-      description: task,
-      status: "todo",
-      createdAt: `${day}/${month}/${year}, ${time}:${minute}:${seconds}`,
-      updatedAt: `${day}/${month}/${year}, ${time}:${minute}:${seconds}`,
-    };
-    if (Array.isArray(data[0])) {
-      data[0].push(id);
-    } else {
-      data[0] = [id];
-    }
-    data.push(obj);
-    updateFile(data, id);
+}
+function addTask() {
+  const task = input;
+  let data = isFileExist([]);
+  let id = createId(data);
+  const obj = {
+    id,
+    description: task,
+    status: "todo",
+    createdAt: `${day}/${month}/${year}, ${time}:${minute}:${seconds}`,
+    updatedAt: `${day}/${month}/${year}, ${time}:${minute}:${seconds}`,
+  };
+  if (Array.isArray(data[0])) {
+    data[0].push(id);
+  } else {
+    data[0] = [id];
   }
+  data.push(obj);
+  updateFile(data, id);
 }
 function updateTask() {
-  const id = Number(input[0]);
+  const id = Number(input);
   if (Number.isNaN(id)) {
     process.stdout.write("Please give right ID of the task");
     process.exit(1);
@@ -80,8 +84,8 @@ function updateTask() {
     updateFile(data, id);
   }
 }
-function del() {
-  const id = Number(input[0]);
+function markInProgress() {
+  const id = Number(input);
   if (Number.isNaN(id)) {
     process.stdout.write("Please give right ID of the task");
     process.exit(1);
@@ -97,11 +101,77 @@ function del() {
     while (data.length > i) {
       if (data[i].id == id) {
         isIdExist = true;
-        data[i].description = input.split(" ").slice(1).join(" ");
+        data[i].status = "in-progress";
+        data[
+          i
+        ].updatedAt = `${day}/${month}/${year}, ${time}:${minute}:${seconds}`;
         break;
       }
       i++;
     }
+    if (!isIdExist) {
+      process.stdout.write("Please give right ID of the task");
+      process.exit(1);
+    }
+    updateFile(data, id);
+  }
+}
+function markDone() {
+  const id = Number(input);
+  if (Number.isNaN(id)) {
+    process.stdout.write("Please give right ID of the task");
+    process.exit(1);
+  } else {
+    let data = isFileExist([]);
+    if (data.length <= 0) {
+      process.stdout.write("There are no task availble");
+      process.exit(1);
+    }
+    let isIdExist = false;
+
+    let i = 1;
+    while (data.length > i) {
+      if (data[i].id == id) {
+        isIdExist = true;
+        data[i].status = "done";
+        data[
+          i
+        ].updatedAt = `${day}/${month}/${year}, ${time}:${minute}:${seconds}`;
+        break;
+      }
+      i++;
+    }
+    if (!isIdExist) {
+      process.stdout.write("Please give right ID of the task");
+      process.exit(1);
+    }
+    updateFile(data, id);
+  }
+}
+function deleteTask() {
+  const id = Number(input);
+  if (Number.isNaN(id)) {
+    process.stdout.write("Please give right ID of the task");
+    process.exit(1);
+  } else {
+    let data = isFileExist([]);
+    console.log(data[0].includes(id), data[0], "id: ", id);
+    if (data.length < 0 || !data[0].includes(id)) {
+      process.stdout.write("There are no task with this id");
+      process.exit(1);
+    }
+    let isIdExist = false;
+
+    data[0] = data[0].filter((nm) => nm != id);
+    data = data.filter((item) => {
+      console.log("item", item);
+      if (item.id == id) {
+        isIdExist = true;
+      } else {
+        return item;
+      }
+    });
+
     if (!isIdExist) {
       process.stdout.write("Please give right ID of the task");
       process.exit(1);
@@ -128,7 +198,7 @@ function updateFile(data, id) {
       process.stdout.write(`Error creating file: ${err.message}`);
       process.exit(1);
     } else {
-      process.stdout.write(`# Output: Task added successfully (ID: ${id})`);
+      process.stdout.write(`# Output: Task (ID: ${id})`);
       process.exit(0);
     }
   });
